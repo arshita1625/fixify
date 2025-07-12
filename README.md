@@ -38,8 +38,8 @@ For service providers, Fixify offers a platform to:
 
 ## Tech Stack
 - **Frontend:** React (Vite)
-- **Backend:** Firebase
-- **Deployment:** AWS
+- **Backend:** Node.js and JWT Authentication
+- **Deployment:** Railway
 
 ---
 
