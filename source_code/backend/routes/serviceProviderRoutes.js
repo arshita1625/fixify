@@ -4,19 +4,6 @@ const ObjectId = require("mongodb").ObjectId
 
 let serviceProviderRoutes = express.Router()
 
-//////////////////////////////////////////////////////////////////////////
-// Read Routes
-//////////////////////////////////////////////////////////////////////////
-/**
- * Request Type: GET 
- * URL: http://localhost:3000/serviceProviders
- * Description: Get all service providers.
-*/
-// serviceProviderRoutes.route("/serviceProviders").get(async (request, response) => {
-//     let db = database.getDb()
-//     let data = await db.collection("serviceProviders").find({}).toArray()
-//     response.json(data)
-// })
 serviceProviderRoutes.route("/serviceProviders").get(async (request, response) => {
     try {
         let db = database.getDb();

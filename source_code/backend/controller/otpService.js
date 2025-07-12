@@ -4,8 +4,10 @@ const UserOTPVerification = require("../models/UserOTPVerification");
 
 // Email transporter configuration with validation
 const createTransporter = () => {
-    const emailUser = process.env.EMAIL_USER || "parekhbhargav25@gmail.com";
-    const emailPass = process.env.EMAIL_PASS || "rhonpqaxgusbujip";
+    // const emailUser = process.env.EMAIL_USER || "parekhbhargav25@gmail.com";
+    // const emailPass = process.env.EMAIL_PASS || "rhonpqaxgusbujip";
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
 
     if (!emailUser || !emailPass) {
         throw new Error("Email credentials not properly configured");
@@ -51,9 +53,9 @@ async function sendOTP(email, userId) {
             throw new Error("Email service not properly initialized");
         }
 
-        const otp = Math.floor(10000 + Math.random() * 90000).toString();
-        const hashedOTP = await bcrypt.hash(otp, 10);
-        const expiry = new Date(Date.now() + 10 * 60 * 1000);
+        const otp = Math.floor(10000 + Math.random() * 90000).toString(); // 5 digit 
+        const hashedOTP = await bcrypt.hash(otp, 10); // hashed otp
+        const expiry = new Date(Date.now() + 3 * 60 * 1000);   //3 minutes in db
 
         const otpRecord = new UserOTPVerification({
             user_id: userId,
@@ -63,7 +65,7 @@ async function sendOTP(email, userId) {
         await otpRecord.save();
 
         const mailOptions = {
-            from: process.env.EMAIL_USER || "parekhbhargav25@gmail.com",
+            from: process.env.EMAIL_USER || "arshita01625@gmail.com",
             to: email,
             subject: "Your OTP Code",
             text: `Your OTP code is: ${otp}. It is valid for 10 minutes.`,

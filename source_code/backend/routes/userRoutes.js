@@ -57,7 +57,7 @@ userRoutes.route("/users/login").post(async (request, response) => {
       });
     }
 
-    const token = jwt.sign(
+    const token = jwt.sign(                                                                     //while signing a token, user sends payload only
       { username: user.username, role: user.role, id: user._id },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -270,7 +270,7 @@ userRoutes.put("/users/update", async (req, res) => {
     const result = await db.collection("users").findOneAndUpdate(
       { email },
       { $set: updateFields },
-      { returnDocument: "after" } // <-- Important for newer driver versions
+      { returnDocument: "after" } // <-- after you apply the update, return the updated document
     );
 
     if (!result) {

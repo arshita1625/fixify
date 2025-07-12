@@ -4,16 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const ServiceProvider = require('../models/serviceProviderModel');
 const nodemailer = require("nodemailer");
-
-// async function connectToDatabase() {
-//     try {
-//         await mongoose.connect(process.env.ATLAS_URI);
-//         console.log("Database connection established");
-//     } catch (error) {
-//         console.error("Error connecting to the database:", error);
-//         throw error;
-//     }
-// }
+//data seeding script
 
 async function insertAdminUser() {
     try {

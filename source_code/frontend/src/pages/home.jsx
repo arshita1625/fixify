@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar/Navbar';
 import ReadyToGetStarted from '../components/getstarted/getstarted';
 import ServicesSection from '../components/serviceSection/serviceSection';
 import WorkerManagementForm from "./serviceProviderSignup";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { getTopReviews } from '../api/reviewApi';
 import { Container, Grid, Typography } from "@mui/material";
 import ReviewCard from "../components/ReviewCard.jsx";
@@ -15,11 +15,11 @@ import ReviewCard from "../components/ReviewCard.jsx";
 
 function Home() {
   const [reviews, setReviews] = useState([]);
-    useEffect(() => {
-      getTopReviews().then((data) => {
-        setReviews(data);
-      });
-    }, []);
+  useEffect(() => {
+    getTopReviews().then((data) => {
+      setReviews(data);
+    });
+  }, []);
   return (
     <>
       <Navbar />
@@ -32,7 +32,7 @@ function Home() {
           ⭐ Customer Reviews ⭐
         </Typography>
         <Grid container spacing={2} justifyContent="center">
-          {reviews.slice(0, 3).map((review, index) => (
+          {reviews.slice(0, 4).map((review, index) => (
             <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
               <ReviewCard review={review} />
             </Grid>

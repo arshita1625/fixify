@@ -1,132 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar.jsx';
 import WorkerContactModal from '../components/UserModal/WorkerContactModal.jsx';
-import { getAllServiceProviders, getVerifiedServiceProviders } from '../api/serviceProviderApi';
+import { getVerifiedServiceProviders } from '../api/serviceProviderApi';
 
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Typography from '@mui/material/Typography';
 import PhoneIcon from '@mui/icons-material/Phone';
-
-
-const services_offered = [
-  "Plumbing", "Electrical", "Carpentry", "Painting", "Cleaning", 
-  "HVAC Repair", "Gardening", "Pest Control", "Roofing", "Masonry", 
-  "Appliance Repair", "Flooring", "Locksmith", "Window Cleaning", 
-  "Handyman", "Drywall Repair", "Tile Work", "Furniture Assembly",
-  "Pressure Washing", "Pool Maintenance"
-]
-
-const Navbar2 = ({ onFilter, onSort }) => {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-
-  const toggleDropdown = (menu) => {
-    setActiveDropdown(activeDropdown === menu ? null : menu);
-  };
-
-  const handleSort = (category, order) => {
-    onSort(category, order);
-    setActiveDropdown(null);  // Close the dropdown after selection
-  };
-
-  const handleFilter = (skills) => {
-    onFilter(skills);
-    setActiveDropdown(null);  // Close the dropdown after selection
-  };
-
-  const handleCloseDropdown = () => {
-    setActiveDropdown(null);
-  }
-  useEffect(() => {
-    // Close dropdown if clicked outside
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.dropdown')) {
-        handleCloseDropdown();
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
-
-  // Add option clear all filters and sorting
-  const handleClearAll = () => {
-    onFilter(null); // Reset filters
-    onSort(null, null); // Reset sorting
-    setActiveDropdown(null); // Close all dropdowns
-  }
-
-  return (
-    <div className="navbar2">
-      {/* Rating Dropdown */}
-      {/* Services Dropdown */}
-      <div className="dropdown">
-        <button className="nav-btn" onClick={() => toggleDropdown('skills')}>
-          Skills ▼
-        </button>
-        {/* Dropdown scrollable list for skills */}
-        {activeDropdown === 'skills' && (
-          <div className="dropdown-list" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-            {services_offered.map((skill) => (
-              <button key={skill} onClick={() => handleFilter(skill)}>
-                {skill}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="dropdown">
-        <button className="nav-btn" onClick={() => toggleDropdown('rating')}>
-          Rating ▼
-        </button>
-        {activeDropdown === 'rating' && (
-          <div className="dropdown-list">
-            <button onClick={() => handleSort('rating', 'asc')}>Low to High</button>
-            <button onClick={() => handleSort('rating', 'desc')}>High to Low</button>
-          </div>
-        )}
-      </div>
-
-      {/* Price Dropdown */}
-      <div className="dropdown">
-        <button className="nav-btn" onClick={() => toggleDropdown('price')}>
-          Price ▼
-        </button>
-        {activeDropdown === 'price' && (
-          <div className="dropdown-list">
-            <button onClick={() => handleSort('price', 'asc')}>Low to High</button>
-            <button onClick={() => handleSort('price', 'desc')}>High to Low</button>
-          </div>
-        )}
-      </div>
-
-      {/* Show button to reset all filters*/}
-      <div className="dropdown">
-        <button className="nav-btn" onClick={handleClearAll}>
-          x Filters
-        </button>
-      </div>
-
-
-      {/* Location Dropdown 
-      <div className="dropdown">
-        <button className="nav-btn" onClick={() => toggleDropdown('location')}>
-          Location ▼
-        </button>
-        {activeDropdown === 'location' && (
-          <div className="dropdown-list">
-            <button onClick={() => handleSort('location', 'nearest')}>Nearest</button>
-            <button onClick={() => handleSort('location', 'farthest')}>Farthest</button>
-          </div>
-        )}
-      </div>*/}
-    </div>
-  );
-};
+import FilterNavbar from './FilterNavbar.jsx';
 
 const FindService = () => {
 
@@ -146,9 +28,9 @@ const FindService = () => {
             profile.photo = `photo.png`;
             profile.rate = profile.hourly_rate;
           });
-          setProfileData( [...response.data.data]);
+          setProfileData([...response.data.data]);
           setSortedProfiles([...response.data.data]);
-          setFilteredProfiles([...response.data.data]); 
+          setFilteredProfiles([...response.data.data]);
         }
       })
       .catch((error) => {
@@ -173,24 +55,24 @@ const FindService = () => {
       setSortedProfiles(profileData);
       return;
     }
-  
+
     const filtered = profileData.filter((profile) => {
       // Ensure case-insensitive comparison
       return profile.services.some((service) =>
         service.toLowerCase() === skills.toLowerCase()
       );
     });
-  
+
     setFilteredProfiles(filtered);
     setSortedProfiles(filtered); // Update sortedProfiles to reflect the filtered data
     console.log("Filtered profiles:", filtered);
   };
 
-  
+
 
   const sortProfiles = (category, order) => {
     let sortedData = [...filteredProfiles]; // Sort filteredProfiles, not profileData
-  
+
     if (category === 'rating') {
       sortedData.sort((a, b) => order === 'asc' ? a.ratings - b.ratings : b.ratings - a.ratings);
     } else if (category === 'price') {
@@ -209,7 +91,7 @@ const FindService = () => {
         }
       });
     }*/
-  
+
     console.log("Sorted data:", sortedData);
     setSortedProfiles(sortedData);
   };
@@ -235,7 +117,7 @@ const FindService = () => {
   return (
     <div>
       <Navbar />
-      <Navbar2 onFilter={filterProfiles} onSort={sortProfiles} />
+      <FilterNavbar onFilter={filterProfiles} onSort={sortProfiles} />
       <div className="profile-container">
         {sortedProfiles.map((profile) => (
           <div key={profile.id} className="profile-card">
@@ -253,13 +135,13 @@ const FindService = () => {
 
               {/* Back side of the card */}
               <div className="card-back">
-              {/* <p><strong>Location:</strong> {getLocationString(profile.userDetails.address)} </p> */}
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <LocationOnIcon color="primary" />
-                <Typography variant="body1">
-                  {getLocationString(profile.userDetails.address)}
-                </Typography>
-              </Stack>
+                {/* <p><strong>Location:</strong> {getLocationString(profile.userDetails.address)} </p> */}
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <LocationOnIcon color="primary" />
+                  <Typography variant="body1">
+                    {getLocationString(profile.userDetails.address)}
+                  </Typography>
+                </Stack>
                 {/* <p><strong>Location:</strong> {getLocationString(profile.userDetails.address)} </p> */}
                 {/* <p><strong>Services:</strong> {profile.services.join(", ")}</p> */}
                 <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -272,8 +154,8 @@ const FindService = () => {
                   <Typography variant="body1">
                     {profile.userDetails.phone}
                   </Typography>
-                </Stack>                <button 
-                  className="contact-btn" 
+                </Stack>                <button
+                  className="contact-btn"
                   onClick={() => handleContactClick(profile)}
                 >
                   Contact
@@ -285,10 +167,10 @@ const FindService = () => {
       </div>
 
       {/* Render WorkerContactModal */}
-      <WorkerContactModal 
-        open={modalOpen} 
-        handleClose={handleCloseModal} 
-        worker={selectedWorker} 
+      <WorkerContactModal
+        open={modalOpen}
+        handleClose={handleCloseModal}
+        worker={selectedWorker}
       />
 
       <style jsx>{`

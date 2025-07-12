@@ -22,8 +22,8 @@ const connectToServer = async () => {
 const getDb = () => {
   if (mongoose.connection.readyState !== 1) {
     throw new Error("DB CONNECTION: Not connected to MongoDB!");
-  }
-  return mongoose.connection.db;
+}
+return mongoose.connection.db;
 };
 
 const closeConnection = async () => {
