@@ -19,5 +19,3 @@ const serviceSchema = new Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model("service", serviceSchema, "services");
-
-// a particular user offering multiple services and varying rates, like "John's' Plumbing Service", "John's Electrical Service", etc.

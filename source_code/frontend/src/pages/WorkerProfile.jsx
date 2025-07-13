@@ -91,10 +91,11 @@ const WorkerProfile = () => {
         province: formData.province,
         postalCode: formData.postalCode,
       };
-  
+
       const response = await axios.put("http://localhost:3000/users/update", payload);
-  
+
       if (response.data.success) {
+        console.log("responsee", response);
         // Update both the AuthContext and local storage (if used)
         setUser(response.data.data);
         localStorage.setItem("user", JSON.stringify(response.data.data));
@@ -108,7 +109,7 @@ const WorkerProfile = () => {
       alert("An error occurred while updating your profile.");
     }
   };
-  
+
 
   return (
     <Container

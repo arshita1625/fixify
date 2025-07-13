@@ -275,12 +275,14 @@ userRoutes.put("/users/update", async (req, res) => {
       { $set: updateFields },
       { returnDocument: "after" } // <-- after you apply the update, return the updated document
     );
+    console.log("result", result);
+    console.log("result.value", result.value);
 
     if (!result) {
       return res.status(404).json({ success: false, message: "User not found." });
     }
 
-    return res.json({ success: true, data: result.value });
+    return res.json({ success: true, data: result });
   } catch (error) {
     console.error("Error updating customer profile:", error);
     return res.status(500).json({ success: false, message: "Internal Server Error" });

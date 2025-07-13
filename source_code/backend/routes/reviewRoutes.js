@@ -21,10 +21,21 @@ reviewRoutes.route("/reviews/top").get(async (request, response) => {
   }
 });
 
-reviewRoutes.get("/reviews/worker-reviews/:workerId", async (req, res) => {
+reviewRoutes.get("/reviews/worker-reviews/:userId", async (req, res) => {
   // console.log("Fetching reviews for worker:", req.params.workerId);
   try {
-    const { workerId } = req.params;
+    const { userId } = req.params;
+    let db = database.getDb();
+    const provider = await db
+      .collection("service_providers")
+      .findOne({ user_id: new ObjectId(userId) });
+
+    if (!provider) {
+      return response
+        .status(404)
+        .json({ message: "No service-provider record found for that user." });
+    }
+    const workerId = provider._id;
     const reviews = await Review.find({ provider: workerId });
     res.status(200).json({ success: true, reviews });
   } catch (error) {

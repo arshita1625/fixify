@@ -24,7 +24,7 @@
 //   { icon: <SentimentSatisfiedAltIcon fontSize="large" sx={{ color: "black" }} />, title: "Satisfied Clients" },
 //   { icon: <SentimentSatisfiedAltIcon fontSize="large" sx={{ color: "black" }} />, title: "Satisfied Clients" },
 //   { icon: <SentimentSatisfiedAltIcon fontSize="large" sx={{ color: "black" }} />, title: "Satisfied Clients" }
- 
+
 // ];
 
 // const ServicesSection = () => {
@@ -96,16 +96,16 @@ const ServicesSection = () => {
       <Swiper
         modules={[Navigation]}
         navigation
-        spaceBetween={5}
+        spaceBetween={4}
         slidesPerView={5} // Default view for large screens
         breakpoints={{
           320: { slidesPerView: 2 },
-          600: { slidesPerView: 2 }, 
-          960: { slidesPerView: 3 }, 
-          1280: { slidesPerView: 5 }, 
+          600: { slidesPerView: 2 },
+          960: { slidesPerView: 3 },
+          1280: { slidesPerView: 5 },
           1600: { slidesPerView: 5 },
         }}
-        style={{ padding: "20px 0" }}
+        style={{ padding: "22px 0" }}
       >
         {services.map((service, index) => (
           <SwiperSlide key={index}>

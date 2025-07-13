@@ -34,7 +34,7 @@ export default function Navbar() {
     if (user?.role === "admin") {
       navigate("/admin");
     } else if (user?.role === "provider") {
-      navigate("/WorkerPrtotalUsersofile");
+      navigate("/WorkerProfile");
     } else {
       navigate("/customerProfile");
     }
