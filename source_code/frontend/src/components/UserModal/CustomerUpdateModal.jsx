@@ -23,13 +23,6 @@ const CustomerUpdateModal = ({ open, handleClose, customer }) => {
   const handleDeleteClick = () => {
     setDeleteDialogOpen(true);
   };
-
-  // const handleConfirmDelete = () => {
-  //   // Perform account deletion (API Call or State Update)
-  // setDeleteDialogOpen(false);
-  // handleClose(); // Closing both modals
-  // };
-
   const handleDelete = async (customerId) => {
     try {
       const response = await fetch(`http://localhost:3000/users/${customerId}`, {

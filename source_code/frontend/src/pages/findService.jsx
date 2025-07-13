@@ -23,7 +23,6 @@ const FindService = () => {
     getVerifiedServiceProviders()
       .then((response) => {
         if (response.status === 200) {
-          console.log("Profile data:", response.data.data);
           response.data.data.forEach((profile) => {
             profile.photo = `photo.png`;
             profile.rate = profile.hourly_rate;
@@ -81,18 +80,8 @@ const FindService = () => {
         const priceB = b.rate;
         return order === 'asc' ? priceA - priceB : priceB - priceA;
       });
-    } /*else if (category === 'location') {
-      // Assuming a simple location sorting based on alphabetical order
-      sortedData.sort((a, b) => {
-        if (order === 'nearest') {
-          return a.location.localeCompare(b.location);
-        } else {
-          return b.location.localeCompare(a.location);
-        }
-      });
-    }*/
+    }
 
-    console.log("Sorted data:", sortedData);
     setSortedProfiles(sortedData);
   };
 

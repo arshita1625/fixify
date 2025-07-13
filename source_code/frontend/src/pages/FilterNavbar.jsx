@@ -100,20 +100,6 @@ const FilterNavbar = ({ onFilter, onSort }) => {
                     x Filters
                 </button>
             </div>
-
-
-            {/* Location Dropdown 
-      <div className="dropdown">
-        <button className="nav-btn" onClick={() => toggleDropdown('location')}>
-          Location ▼
-        </button>
-        {activeDropdown === 'location' && (
-          <div className="dropdown-list">
-            <button onClick={() => handleSort('location', 'nearest')}>Nearest</button>
-            <button onClick={() => handleSort('location', 'farthest')}>Farthest</button>
-          </div>
-        )}
-      </div>*/}
         </div>
     );
 };

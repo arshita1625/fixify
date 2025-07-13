@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import ServiceProviderUpdateModal from "../components/serviceProviderModal/ServiceProviderUpdateModal";
-
+import { getAllServiceProviders } from "../api/serviceProviderApi";
 const ManageWorkers = () => {
   const [open, setOpen] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState();
@@ -26,22 +26,8 @@ const ManageWorkers = () => {
 
 
   async function fetchData() {
-    try {
-      const response = await fetch("http://localhost:3000/serviceProviders", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const res = await response.json();
-      setWorker(res.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    const response = await getAllServiceProviders();
+    setWorker(response.data.data)
   }
 
   const handleOpen = (worker) => {
@@ -57,7 +43,6 @@ const ManageWorkers = () => {
 
   // New function to handle verification
   const handleVerify = async (workerId) => {
-    console.log("Verifying worker with ID:", workerId);
     const id = workerId.toString();
     try {
       const response = await fetch(`http://localhost:3000/serviceProviders/${id}`, {

@@ -18,6 +18,6 @@ export async function getTopReviews() {
     if( response.status == 200 ) {
         return response.data
     } else {
-        return // TODO error handling
+        return 
     }
 }

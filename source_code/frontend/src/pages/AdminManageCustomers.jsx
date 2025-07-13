@@ -5,14 +5,6 @@ import {
 } from "@mui/material";
 import CustomerUpdateModal from "../components/UserModal/CustomerUpdateModal";
 import { fetchAllUsers } from "../api/userApi";
-// const customers = [
-//   { name: "Emma Wilson", email: "emma@example.com", bookings: 5 },
-//   { name: "Liam Anderson", email: "liam@example.com", bookings: 3 },
-//   { name: "Olivia Taylor", email: "olivia@example.com", bookings: 7 },
-//   { name: "Noah Martinez", email: "noah@example.com", bookings: 2 },
-//   { name: "Ava Johnson", email: "ava@example.com", bookings: 4 }
-// ];
-
 const ManageCustomers = () => {
   const [open, setOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -21,15 +13,6 @@ const ManageCustomers = () => {
   useEffect(() => {
     handleFetchUsers()
   }, []);
-  // const handleDeleteClick = () => {
-  //   setDeleteDialogOpen(true);
-  // };
-
-  // const handleConfirmDelete = () => {
-  //   // Perform account deletion (API Call or State Update)
-  //   setDeleteDialogOpen(false);
-  //   handleClose(); // Closing both modals
-  // };
 
 
   // Function to open modal with selected customer
@@ -38,8 +21,6 @@ const ManageCustomers = () => {
     setOpen(true);
   };
 
-
-  // Function to close modal
   const handleClose = () => {
     setOpen(false);
     setSelectedCustomer(null);
@@ -50,8 +31,8 @@ const ManageCustomers = () => {
       const userData = await fetchAllUsers();
 
       const consumers = userData.filter(user => user.role === "consumer").map(user => ({
-        ...user, // Keep all existing user properties
-        name: `${capitalize(user.first_name)} ${capitalize(user.last_name)}` // Concatenated name
+        ...user,
+        name: `${capitalize(user.first_name)} ${capitalize(user.last_name)}`
       }));
 
       setCustomers(consumers);;

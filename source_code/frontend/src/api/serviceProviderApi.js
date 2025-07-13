@@ -14,7 +14,6 @@ export async function getAllServiceProviders() {
 
 export async function getVerifiedServiceProviders() {
     const response = await axios.get(`${URL}/verified/serviceProviders`)
-    console.log("service providers res", response);
     if (response.status == 200) {
         return response
     } else {
