@@ -13,26 +13,6 @@ const { sendOTP, verifyOTP } = require("../controller/otpService");
 
 let userRoutes = express.Router()
 
-//////////////////////////////////////////////////////////////////////////
-// Read Routes
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-// Create Routes
-//////////////////////////////////////////////////////////////////////////
-
-/**
- * Request Type: POST 
- * URL: http://localhost:3000/users/login
- * Description: Verify user login info. Returns user info upon success.
-*/
-
-// userRoutes.route("/users").get(async (request, response) => {
-//     let db = database.getDb()
-//     let data = await db.collection("users").find({}).toArray()
-//     response.json({ data })
-// })
-
 userRoutes.route("/users/login").post(async (request, response) => {
   try {
     let db = database.getDb();
@@ -135,7 +115,6 @@ userRoutes.post("/worker-signup", async (req, res) => {
       serviceDescription,
       schedule,         // object containing availability info
     } = req.body;
-    console.log("req.body", req.body);
 
     // Check if user already exists
     const existingUser = await User.findOne({
@@ -242,6 +221,16 @@ userRoutes.post("/verify-otp", async (req, res) => {
   } catch (error) {
     console.error("Verify OTP error:", error);
     res.status(500).json({ success: false, message: "Failed to verify OTP" });
+  }
+});
+
+//Get Users
+userRoutes.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching users", error: err.message });
   }
 });
 

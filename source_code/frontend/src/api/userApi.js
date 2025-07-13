@@ -9,8 +9,9 @@ export async function verifyUser(user) {
 
 export async function fetchAllUsers() {
     const response = await axios.get(`${URL}/users`)
+
     if (response.status == 200) {
-        return response
+        return response.data
     } else {
         return
     }

@@ -48,7 +48,8 @@ const ManageCustomers = () => {
   const handleFetchUsers = async () => {
     try {
       const userData = await fetchAllUsers();
-      const consumers = userData.data.data.filter(user => user.role === "consumer").map(user => ({
+
+      const consumers = userData.filter(user => user.role === "consumer").map(user => ({
         ...user, // Keep all existing user properties
         name: `${capitalize(user.first_name)} ${capitalize(user.last_name)}` // Concatenated name
       }));
