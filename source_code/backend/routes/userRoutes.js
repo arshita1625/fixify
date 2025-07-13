@@ -135,6 +135,7 @@ userRoutes.post("/worker-signup", async (req, res) => {
       serviceDescription,
       schedule,         // object containing availability info
     } = req.body;
+    console.log("req.body", req.body);
 
     // Check if user already exists
     const existingUser = await User.findOne({
@@ -170,7 +171,9 @@ userRoutes.post("/worker-signup", async (req, res) => {
       availability: schedule,
       ratings: 0,
       reviews_count: 0,
-      // Optionally, you can also store an array of services if available
+      hourly_rate: hourlyRate,
+      description: serviceDescription,
+      services: skills
     });
     await newServiceProvider.save({ session });
 
