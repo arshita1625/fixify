@@ -23,19 +23,25 @@ const FindService = () => {
     getVerifiedServiceProviders()
       .then((response) => {
         if (response.status === 200) {
-          response.data.data.forEach((profile) => {
-            profile.photo = `photo.png`;
-            profile.rate = profile.hourly_rate;
-          });
-          setProfileData([...response.data.data]);
-          setSortedProfiles([...response.data.data]);
-          setFilteredProfiles([...response.data.data]);
+          const currentUserEmail = JSON.parse(sessionStorage.getItem("user") || "{}");
+          const filteredProfiles = response.data.data
+            .filter((profile) => profile.userDetails.username !== currentUserEmail.username)
+            .map((profile) => ({
+              ...profile,
+              photo: "photo.png",
+              rate: profile.hourly_rate,
+            }));
+
+          setProfileData(filteredProfiles);
+          setSortedProfiles(filteredProfiles);
+          setFilteredProfiles(filteredProfiles);
         }
       })
       .catch((error) => {
         console.error("Error fetching profile data:", error);
       });
   }, []);
+
 
   const handleContactClick = (worker) => {
     setSelectedWorker(worker);

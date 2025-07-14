@@ -98,7 +98,7 @@ const WorkerProfile = () => {
         console.log("responsee", response);
         // Update both the AuthContext and local storage (if used)
         setUser(response.data.data);
-        localStorage.setItem("user", JSON.stringify(response.data.data));
+        sessionStorage.setItem("user", JSON.stringify(response.data.data));
         setIsEditing(false);
         alert("Profile updated successfully!");
       } else {
