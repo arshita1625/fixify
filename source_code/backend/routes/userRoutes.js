@@ -110,10 +110,10 @@ userRoutes.post("/worker-signup", async (req, res) => {
       email,
       phone,
       address,
-      skills,           // an array e.g., ["Plumbing", "Electrical"]
-      hourlyRate,       // number value
+      skills,
+      hourlyRate,
       serviceDescription,
-      schedule,         // object containing availability info
+      schedule,
     } = req.body;
 
     // Check if user already exists
