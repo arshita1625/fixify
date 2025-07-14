@@ -1,4 +1,4 @@
-const request = require("supertest");
+const request = require("supertest"); //supertest -> client server interactions
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const express = require("express");
@@ -44,7 +44,7 @@ afterAll(async () => {
 
 beforeEach(() => {
   // Mock console.error to suppress error logs during tests
-  jest.spyOn(console, "error").mockImplementation(() => {});
+  jest.spyOn(console, "error").mockImplementation(() => { });
 });
 
 afterEach(() => {

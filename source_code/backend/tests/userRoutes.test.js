@@ -1,109 +1,109 @@
-    const request = require("supertest");
-    const mongoose = require("mongoose");
-    const { MongoMemoryServer } = require("mongodb-memory-server");
-    const { app } = require("../server");
-    const loadUsers = require("../assets/loadUsers");
-    const nodemailer = require("nodemailer");
-    const bcrypt = require("bcrypt");
-    const User = require("../models/userModel");
-    const ServiceProvider = require("../models/serviceProviderModel");
-    const jwt = require("jsonwebtoken");
-    const dotenv = require("dotenv");
-    dotenv.config({ path: "./config.env" });
+const request = require("supertest");
+const mongoose = require("mongoose");
+const { MongoMemoryServer } = require("mongodb-memory-server");
+const { app } = require("../server");
+const loadUsers = require("../assets/loadUsers");
+const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
+const User = require("../models/userModel");
+const ServiceProvider = require("../models/serviceProviderModel");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 
-    // Mock Nodemailer
-    jest.mock("nodemailer");
+// Mock Nodemailer
+jest.mock("nodemailer");
 
-    let mongoServer;
+let mongoServer;
 
-    beforeAll(async () => {
-        // Override the JWT_SECRET environment variable for testing
-        process.env.JWT_SECRET = "4yJv9kL8s5d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7";
+beforeAll(async () => {
+    // Override the JWT_SECRET environment variable for testing
+    process.env.JWT_SECRET = "4yJv9kL8s5d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7d9f8s7";
 
-        // Mock Nodemailer's createTransport and sendMail
-        nodemailer.createTransport.mockReturnValue({
-            sendMail: jest.fn().mockResolvedValue({ messageId: "mocked-message-id" }),
-        });
-
-        mongoServer = await MongoMemoryServer.create();
-        const mongoUri = mongoServer.getUri();
-        await mongoose.connect(mongoUri);
+    // Mock Nodemailer's createTransport and sendMail
+    nodemailer.createTransport.mockReturnValue({
+        sendMail: jest.fn().mockResolvedValue({ messageId: "mocked-message-id" }),
     });
 
-    afterAll(async () => {
-        await mongoose.connection.close();
-        await mongoServer.stop();
-    });
+    mongoServer = await MongoMemoryServer.create();
+    const mongoUri = mongoServer.getUri();
+    await mongoose.connect(mongoUri);
+});
 
-    
+afterAll(async () => {
+    await mongoose.connection.close();
+    await mongoServer.stop();
+});
 
-    let token;
-    let serviceProviderId;
-    let userId;
 
-    beforeEach(async () => {
-        // Load admin user into db
-        await loadUsers.insertAdminUser();
 
-        // Load verified service provider user into db
-        await loadUsers.insertServiceProviderUser();
+let token;
+let serviceProviderId;
+let userId;
 
-        // Load unverified service provider user into db
-        await loadUsers.insertUnverifiedServiceProviderUser();
+beforeEach(async () => {
+    // Load admin user into db
+    await loadUsers.insertAdminUser();
 
-        // Log in as admin to get a token
-        const loginResponse = await request(app)
+    // Load verified service provider user into db
+    await loadUsers.insertServiceProviderUser();
+
+    // Load unverified service provider user into db
+    await loadUsers.insertUnverifiedServiceProviderUser();
+
+    // Log in as admin to get a token
+    const loginResponse = await request(app)
         .post("/users/login")
         .send({ username: "admin", password: "admin" });
-        token = loginResponse.body.token;
+    token = loginResponse.body.token;
 
-        // Fetch the service provider and user IDs
-        const serviceProvider = await mongoose.connection.db
+    // Fetch the service provider and user IDs
+    const serviceProvider = await mongoose.connection.db
         .collection("service_providers")
         .findOne({ status: "verified" });
-        serviceProviderId = serviceProvider._id;
+    serviceProviderId = serviceProvider._id;
 
-        const user = await mongoose.connection.db
+    const user = await mongoose.connection.db
         .collection("users")
         .findOne({ username: "johndoe" });
-        userId = user._id;
-    });
-    
+    userId = user._id;
+});
 
-    afterEach(async () => {
-        // Clean up the database after each test
-        await mongoose.connection.db.collection("users").deleteMany({});
-        await mongoose.connection.db.collection("service_providers").deleteMany({});
-        });
 
-    test("Test Admin Successful Login", async () => {
-            const response = await request(app)
-                .post("/users/login")
-                .send({ username: "admin", password: "admin" });
+afterEach(async () => {
+    // Clean up the database after each test
+    await mongoose.connection.db.collection("users").deleteMany({});
+    await mongoose.connection.db.collection("service_providers").deleteMany({});
+});
 
-            expect(response.status).toBe(200);
-            expect(response.body.success).toBe(true);
-            expect(response.body.message).toBe("Login Successful!");
-            expect(response.body.token).toBeDefined();
-            expect(response.body.user).toBeDefined();
-            expect(response.body.user.username).toBe("admin");
-            expect(response.body.user.role).toBe("admin");
-        });
+test("Test Admin Successful Login", async () => {
+    const response = await request(app)
+        .post("/users/login")
+        .send({ username: "admin", password: "admin" });
 
-        test("Test Admin Unsuccessful Login", async () => {
-            const response = await request(app)
-                .post("/users/login")
-                .send({ username: "admin", password: "wrongpassword" });
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.message).toBe("Login Successful!");
+    expect(response.body.token).toBeDefined();
+    expect(response.body.user).toBeDefined();
+    expect(response.body.user.username).toBe("admin");
+    expect(response.body.user.role).toBe("admin");
+});
 
-            expect(response.status).toBe(401);
-            expect(response.body.success).toBe(false);
-            expect(response.body.message).toBe("Login Failed! Incorrect Password!");
-            expect(response.body.token).toBeUndefined();
-            expect(response.body.user).toBeUndefined();
-        });
+test("Test Admin Unsuccessful Login", async () => {
+    const response = await request(app)
+        .post("/users/login")
+        .send({ username: "admin", password: "wrongpassword" });
 
-    test("PUT /users/:id - should update service provider details", async () => {
-        const updatedDetails = {
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Login Failed! Incorrect Password!");
+    expect(response.body.token).toBeUndefined();
+    expect(response.body.user).toBeUndefined();
+});
+
+test("PUT /users/:id - should update service provider details", async () => {
+    const updatedDetails = {
         user_id: userId,
         _id: serviceProviderId,
         userDetails: {
@@ -112,59 +112,59 @@
             phone: "9876543210",
         },
         services: ["Plumbing", "Electrical", "Cleaning"],
-        };
+    };
 
-        const response = await request(app)
+    const response = await request(app)
         .put(`/users/${userId}`)
         .set("Authorization", `Bearer ${token}`)
         .send(updatedDetails);
 
-        expect(response.status).toBe(200);
-        expect(response.body.message).toBe("User updated successfully");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("User updated successfully");
 
-        // Verify the user details were updated
-        const updatedUser = await mongoose.connection.db
+    // Verify the user details were updated
+    const updatedUser = await mongoose.connection.db
         .collection("users")
         .findOne({ _id: userId });
-        expect(updatedUser.first_name).toBe("UpdatedFirstName");
-        expect(updatedUser.last_name).toBe("UpdatedLastName");
-        expect(updatedUser.phone).toBe("9876543210");
+    expect(updatedUser.first_name).toBe("UpdatedFirstName");
+    expect(updatedUser.last_name).toBe("UpdatedLastName");
+    expect(updatedUser.phone).toBe("9876543210");
 
-        // Verify the service provider services were updated
-        const updatedServiceProvider = await mongoose.connection.db
+    // Verify the service provider services were updated
+    const updatedServiceProvider = await mongoose.connection.db
         .collection("service_providers")
         .findOne({ _id: serviceProviderId });
-        expect(updatedServiceProvider.services).toEqual(["Plumbing", "Electrical", "Cleaning"]);
-    });
+    expect(updatedServiceProvider.services).toEqual(["Plumbing", "Electrical", "Cleaning"]);
+});
 
-    test("PUT /user/:id - should update customer details", async () => {
-        const updatedDetails = {
+test("PUT /user/:id - should update customer details", async () => {
+    const updatedDetails = {
         first_name: "UpdatedCustomerFirstName",
         last_name: "UpdatedCustomerLastName",
         phone: "1231231234",
-        };
+    };
 
-        const response = await request(app)
+    const response = await request(app)
         .put(`/user/${userId}`)
         .set("Authorization", `Bearer ${token}`)
         .send(updatedDetails);
 
-        expect(response.status).toBe(200);
-        expect(response.body.message).toBe("User updated successfully");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("User updated successfully");
 
-        // Verify the user details were updated
-        const updatedUser = await mongoose.connection.db
+    // Verify the user details were updated
+    const updatedUser = await mongoose.connection.db
         .collection("users")
         .findOne({ _id: userId });
-        expect(updatedUser.first_name).toBe("UpdatedCustomerFirstName");
-        expect(updatedUser.last_name).toBe("UpdatedCustomerLastName");
-        expect(updatedUser.phone).toBe("1231231234");
-    });
+    expect(updatedUser.first_name).toBe("UpdatedCustomerFirstName");
+    expect(updatedUser.last_name).toBe("UpdatedCustomerLastName");
+    expect(updatedUser.phone).toBe("1231231234");
+});
 
-    test("PUT /user/:id - should return 404 if user not found", async () => {
-        const nonExistentUserId = new mongoose.Types.ObjectId();
+test("PUT /user/:id - should return 404 if user not found", async () => {
+    const nonExistentUserId = new mongoose.Types.ObjectId();
 
-        const response = await request(app)
+    const response = await request(app)
         .put(`/user/${nonExistentUserId}`)
         .set("Authorization", `Bearer ${token}`)
         .send({
@@ -172,106 +172,32 @@
             last_name: "User",
         });
 
-        expect(response.status).toBe(404);
-        expect(response.body.message).toBe("User not found");
-    });
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("User not found");
+});
 
-    test("PUT /users/:id - should return 404 if service provider not found", async () => {
-        const nonExistentServiceProviderId = new mongoose.Types.ObjectId();
+test("PUT /users/:id - should return 404 if service provider not found", async () => {
+    const nonExistentServiceProviderId = new mongoose.Types.ObjectId();
 
-        const response = await request(app)
+    const response = await request(app)
         .put(`/users/${userId}`)
         .set("Authorization", `Bearer ${token}`)
         .send({
             user_id: userId,
             _id: nonExistentServiceProviderId,
             userDetails: {
-            first_name: "NonExistent",
-            last_name: "Provider",
+                first_name: "NonExistent",
+                last_name: "Provider",
             },
             services: ["NonExistentService"],
         });
 
-        expect(response.status).toBe(500);
-        expect(response.body.message).toBe("Error updating user");
-    });
+    expect(response.status).toBe(500);
+    expect(response.body.message).toBe("Error updating user");
+});
 
-    // test("POST /worker-signup - should register a new worker", async () => {
-    //     const workerDetails = {
-    //     username: "worker1",
-    //     password: "workerpassword",
-    //     first_name: "Worker",
-    //     last_name: "One",
-    //     email: "worker1@example.com",
-    //     phone: "1234567890",
-    //     address: {
-    //         line1: "123 Main St",
-    //         city: "Toronto",
-    //         postal_code: "A1B2C3",
-    //         province: "Ontario",
-    //         country: "Canada",
-    //     },
-    //     skills: ["Plumbing", "Electrical"],
-    //     hourlyRate: 50,
-    //     serviceDescription: "Experienced in plumbing and electrical work.",
-    //     schedule: {
-    //         Monday: ["9:00 AM - 5:00 PM"],
-    //         Tuesday: ["9:00 AM - 5:00 PM"],
-    //     },
-    //     };
-
-    //     const response = await request(app)
-    //     .post("/worker-signup")
-    //     .send(workerDetails);
-
-    //     expect(response.status).toBe(201);
-    //     expect(response.body.message).toBe("Worker registered successfully! Please verify your email with OTP.");
-    //     expect(response.body.userId).toBeDefined();
-
-    //     // Verify the worker was added to the database
-    //     const user = await mongoose.connection.db.collection("users").findOne({ username: "worker1" });
-    //     expect(user).toBeDefined();
-    //     expect(user.first_name).toBe("Worker");
-    //     expect(user.last_name).toBe("One");
-
-    //     const serviceProvider = await mongoose.connection.db.collection("service_providers").findOne({ user_id: user._id });
-    //     expect(serviceProvider).toBeDefined();
-    //     expect(serviceProvider.services).toEqual(["Plumbing", "Electrical"]);
-    // });
-
-    // test("POST /send-otp - should send OTP to the user's email", async () => {
-    //     const response = await request(app)
-    //     .post("/send-otp")
-    //     .send({ email: "johndoe@gmail.com" });
-
-    //     expect(response.status).toBe(200);
-    //     expect(response.body.success).toBe(true);
-    //     expect(response.body.message).toBe("OTP sent successfully");
-    // });
-
-    // test("POST /verify-otp - should verify the OTP", async () => {
-    //     const user = await mongoose.connection.db.collection("users").findOne({ username: "johndoe" });
-
-    //     // Mock OTP verification
-    //     const mockVerifyOTP = jest.fn().mockResolvedValue({ success: true });
-    //     jest.mock("../utils/otpUtils", () => ({
-    //     verifyOTP: mockVerifyOTP,
-    //     }));
-
-    //     const response = await request(app)
-    //     .post("/verify-otp")
-    //     .send({ userId: user._id, otp: "123456" });
-
-    //     expect(response.status).toBe(200);
-    //     expect(response.body.success).toBe(true);
-
-    //     // Verify the user is marked as verified
-    //     const updatedUser = await mongoose.connection.db.collection("users").findOne({ _id: user._id });
-    //     expect(updatedUser.isVerified).toBe(true);
-    // });
-
-    test("PUT /users/update - should update user details", async () => {
-        const updatedDetails = {
+test("PUT /users/update - should update user details", async () => {
+    const updatedDetails = {
         email: "johndoe@gmail.com",
         username: "updatedjohndoe",
         name: "UpdatedJohn",
@@ -280,36 +206,35 @@
         addressln1: "456 Updated St",
         province: "Ontario",
         postalCode: "B2C3D4",
-        };
+    };
 
-        const response = await request(app)
+    const response = await request(app)
         .put("/users/update")
         .send(updatedDetails);
 
-        expect(response.status).toBe(200);
-        expect(response.body.success).toBe(true);
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
 
-        // Verify the user details were updated
-        const updatedUser = await mongoose.connection.db.collection("users").findOne({ email: "johndoe@gmail.com" });
-        expect(updatedUser.username).toBe("updatedjohndoe");
-        expect(updatedUser.first_name).toBe("UpdatedJohn");
-        expect(updatedUser.last_name).toBe("UpdatedDoe");
-        expect(updatedUser.phone).toBe("9876543210");
-        expect(updatedUser.address.line1).toBe("456 Updated St");
-    });
+    // Verify the user details were updated
+    const updatedUser = await mongoose.connection.db.collection("users").findOne({ email: "johndoe@gmail.com" });
+    expect(updatedUser.username).toBe("updatedjohndoe");
+    expect(updatedUser.first_name).toBe("UpdatedJohn");
+    expect(updatedUser.last_name).toBe("UpdatedDoe");
+    expect(updatedUser.phone).toBe("9876543210");
+    expect(updatedUser.address.line1).toBe("456 Updated St");
+});
 
-    test("DELETE /users/:id - should delete a user", async () => {
-        const user = await mongoose.connection.db.collection("users").findOne({ username: "johndoe" });
+test("DELETE /users/:id - should delete a user", async () => {
+    const user = await mongoose.connection.db.collection("users").findOne({ username: "johndoe" });
 
-        const response = await request(app)
+    const response = await request(app)
         .delete(`/users/${user._id}`)
         .set("Authorization", `Bearer ${token}`);
 
-        expect(response.status).toBe(200);
-        expect(response.body.message).toBe("Customer successfully deleted");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Customer successfully deleted");
 
-        // Verify the user was deleted
-        const deletedUser = await mongoose.connection.db.collection("users").findOne({ _id: user._id });
-        expect(deletedUser).toBeNull();
-    });
-    
+    // Verify the user was deleted
+    const deletedUser = await mongoose.connection.db.collection("users").findOne({ _id: user._id });
+    expect(deletedUser).toBeNull();
+});
