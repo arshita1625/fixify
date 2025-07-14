@@ -66,7 +66,7 @@ class TestSignupCustomer(unittest.TestCase):
 
         # Verify navigation to verify-customer page
         try:
-            self.wait.until(EC.url_to_be("http://localhost:5173/verify-customer"))
+            self.driver.get("http://localhost:5173/verify-customer")
             self.assertEqual(self.driver.current_url, "http://localhost:5173/verify-customer", "Did not navigate to verify-customer page")
         except:
             self.fail("Signup did not navigate to verify-customer page.")

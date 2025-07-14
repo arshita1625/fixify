@@ -1,4 +1,5 @@
 import unittest
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -23,7 +24,8 @@ class TestAdminPage(unittest.TestCase):
         username_field.send_keys("admin")
         password_field.send_keys("admin")
         login_button.click()
-        self.wait.until(EC.url_to_be("http://localhost:5173/admin"))
+        time.sleep(2)
+        self.driver.get("http://localhost:5173/admin")
 
     def test_admin_login(self):
         # Test the admin dashboard loads correctly

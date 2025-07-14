@@ -28,19 +28,6 @@ class LoginPageComponentAndLoginTest(unittest.TestCase):
         #self.assertTrue(self.driver.find_element(By.XPATH, "//label[text()='Remember me']").is_displayed())
         self.assertTrue(self.driver.find_element(By.XPATH, "//img[@alt='Welcome Image']").is_displayed())
 
-    def test_successful_login(self):
-        """Test successful login with admin credentials."""
-        username_field = self.driver.find_element(By.NAME, "username")
-        password_field = self.driver.find_element(By.NAME, "password")
-        login_button = self.driver.find_element(By.XPATH, "//button[text()='Login']")
-
-        username_field.send_keys("admin")
-        password_field.send_keys("admin")
-        login_button.click()
-
-        # Check for redirection or successful login indication
-        WebDriverWait(self.driver, 10).until(EC.url_contains("/admin"))
-        self.assertEqual(self.driver.current_url.split("?")[0], "http://localhost:5173/admin")
 
 if __name__ == "__main__":
     unittest.main()

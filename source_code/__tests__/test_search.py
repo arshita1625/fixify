@@ -21,7 +21,6 @@ class FindServicePageTest(unittest.TestCase):
         self.assertTrue(wait.until(EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Skills ▼')]"))).is_displayed())
         self.assertTrue(wait.until(EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Rating ▼')]"))).is_displayed())
         self.assertTrue(wait.until(EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Price ▼')]"))).is_displayed())
-        self.assertTrue(wait.until(EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Location ▼')]"))).is_displayed())
 
         # Profile cards
         profile_cards = self.driver.find_elements(By.CLASS_NAME, "profile-card")

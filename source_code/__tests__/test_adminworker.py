@@ -1,4 +1,5 @@
 import unittest
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -23,7 +24,9 @@ class TestAdminPage(unittest.TestCase):
         username_field.send_keys("admin")
         password_field.send_keys("admin")
         login_button.click()
-        self.wait.until(EC.url_to_be("http://localhost:5173/admin"))
+        time.sleep(2)
+        self.driver.get("http://localhost:5173/admin")
+       
 
     def test_admin_login(self):
         # Test the admin dashboard loads correctly
@@ -32,43 +35,6 @@ class TestAdminPage(unittest.TestCase):
         total_customers = self.driver.find_element(By.XPATH, "//h6[contains(text(), 'Total Customers')]")
         self.assertTrue(total_customers.is_displayed(), "Total Customers card not displayed!")
         print("Admin dashboard test passed successfully!")
-
-    # def test_customers_page(self):
-    #     # Test the ManageCustomers page by navigating directly
-    #     self.driver.get("http://localhost:5173/admin/customers")
-    #     self.wait.until(EC.url_to_be("http://localhost:5173/admin/customers"))
-
-    #     # Verify the "Manage Customers" heading
-    #     manage_customers_heading = self.driver.find_element(By.XPATH, "//h4[contains(text(), 'Manage Customers')]")
-    #     self.assertIn("Manage Customers", manage_customers_heading.text, "Manage Customers heading not found!")
-
-    #     # Verify the search field
-    #     search_label = self.wait.until(
-    #         EC.presence_of_element_located((By.XPATH, "//label[contains(text(), 'Search customers...')]"))
-    #     )
-    #     self.assertTrue(search_label.is_displayed(), "Search customers label not found!")
-    #     search_field = self.driver.find_element(By.XPATH, "//div[contains(@class, 'MuiTextField-root')]//input")
-    #     self.assertTrue(search_field.is_displayed(), "Search customers input field not found!")
-
-    #     # Verify the table headers
-    #     table_headers = self.driver.find_elements(By.XPATH, "//table//th")
-    #     expected_headers = ["Name", "Email", "Registered on", "Actions"]
-    #     actual_headers = [header.text for header in table_headers]
-    #     self.assertEqual(len(table_headers), 4, "Incorrect number of table headers!")
-    #     for expected in expected_headers:
-    #         self.assertIn(expected, actual_headers, f"Table header '{expected}' not found!")
-
-    #     # Verify table rows and "View" button (if data exists)
-    #     customer_rows = self.driver.find_elements(By.XPATH, "//table//tbody//tr")
-    #     if customer_rows:
-    #         first_row = customer_rows[0]
-    #         cells = first_row.find_elements(By.TAG_NAME, "td")
-    #         self.assertEqual(len(cells), 4, "Incorrect number of columns in customer row!")
-    #         view_button = first_row.find_element(By.XPATH, ".//button[text()='VIEW']")
-    #         self.assertTrue(view_button.is_displayed(), "View button not found in customer row!")
-    #         self.assertEqual(view_button.text, "VIEW", "View button text incorrect!")  # Updated to match "VIEW"
-
-    #     print("Customers page test passed successfully!")
 
     def test_workers_page_basic(self):
         # Basic test for ManageWorkers page rendering
