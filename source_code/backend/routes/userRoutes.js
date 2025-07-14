@@ -264,8 +264,6 @@ userRoutes.put("/users/update", async (req, res) => {
       { $set: updateFields },
       { returnDocument: "after" } // <-- after you apply the update, return the updated document
     );
-    console.log("result", result);
-    console.log("result.value", result.value);
 
     if (!result) {
       return res.status(404).json({ success: false, message: "User not found." });
@@ -290,17 +288,31 @@ userRoutes.delete("/users/:id", async (req, res) => {
   console.log("Deleting user with ID:", req.params.id);
   try {
     let db = database.getDb();
-    const customerId = req.params.id;
+    const userId = new ObjectId(req.params.id);
 
-    // Delete the customer document matching the given ID
-    const result = await db.collection("users").deleteOne({ _id: new ObjectId(customerId) });
-    //   const result2 = await db.collection("service_provider").deleteOne({ user_id: new ObjectId(customerId) });
+    // First, find the user document
+    const user = await db.collection("users").findOne({ _id: userId });
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "Customer not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ message: "Customer successfully deleted" });
+    // Delete the user document from 'users'
+    const result = await db.collection("users").deleteOne({ _id: userId });
+
+    // If the user is a provider, also delete from 'service_providers'
+    let providerDeletionResult = { deletedCount: 0 };
+    if (user.role === "provider") {
+      providerDeletionResult = await db
+        .collection("service_providers")
+        .deleteOne({ user_id: userId });
+    }
+
+    res.status(200).json({
+      message: "User successfully deleted",
+      deletedFromUsers: result.deletedCount,
+      deletedFromServiceProviders: providerDeletionResult.deletedCount,
+    });
   } catch (error) {
     console.error("Error deleting customer:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -352,12 +364,6 @@ userRoutes.route("/user/:id").put(async (request, response) => {
     if (!user) {
       return response.status(404).json({ message: "User not found" });
     }
-    // Object.keys(userDetails).forEach(key => {
-    //   if (userDetails[key] === null) {
-    //     console.log("key", key);
-    //     delete userDetails[key];
-    //   }
-    // });
     let result = await db.collection("users").updateOne(
       { _id: new ObjectId(String(userId)) },
       { $set: userDetails }
