@@ -92,15 +92,6 @@ cd fixify
 
 ---
 
-## Team Members
-- **Rithikraj Sowdermett** ([rsowderm@uwaterloo.ca](mailto:rsowderm@uwaterloo.ca))
-- **Geetika Hanumara** ([ghanumar@uwaterloo.ca](mailto:ghanumar@uwaterloo.ca))
-- **Arshita** ([aarshita@uwaterloo.ca](mailto:aarshita@uwaterloo.ca))
-- **Bhargav Parekh** ([bnparekh@uwaterloo.ca](mailto:bnparekh@uwaterloo.ca))
-- **Raghul Chandrasekaran** ([r5chandr@uwaterloo.ca](mailto:r5chandr@uwaterloo.ca))
-- **Rajveer** ([r2jadav@uwaterloo.ca](mailto:r2jadav@uwaterloo.ca))
-
-
 ---
 
-We’re excited to bring Fixify to life and make home service management easier for everyone!
+Excited to bring Fixify to life and make home service management easier for everyone!
