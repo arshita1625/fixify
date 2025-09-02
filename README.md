@@ -11,8 +11,6 @@ Fixify is a home services app designed to connect users with local, reliable ser
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
-- [Team Members](#team-members)
-
 ---
 
 ## About the Project
